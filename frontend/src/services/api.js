@@ -67,4 +67,43 @@ const getGlobalFoods = async () => {
   }
 };
 
-export default { getAll, create, remove, update, uploadMany, getGlobalFoods };
+const createGlobalFood = async (newFood) => {
+  try {
+    const response = await axios.post(`${baseUrl}/global`, newFood);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating global food:', error);
+    throw error;
+  }
+};
+
+const removeGlobalFood = async (id) => {
+  try {
+    await axios.delete(`${baseUrl}/global/${id}`);
+  } catch (error) {
+    console.error('Error deleting global food:', error);
+    throw error;
+  }
+};
+
+const updateGlobalFood = async (id, updatedFood) => {
+  try {
+    const response = await axios.put(`${baseUrl}/global/${id}`, updatedFood);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating global food:', error);
+    throw error;
+  }
+};
+
+export default { 
+  getAll, 
+  create, 
+  remove, 
+  update, 
+  uploadMany,
+  getGlobalFoods,
+  createGlobalFood,
+  removeGlobalFood,
+  updateGlobalFood
+};

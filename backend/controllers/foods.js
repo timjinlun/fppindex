@@ -3,7 +3,7 @@ const foodsRouter = require('express').Router();
 const Food = require('../models/food');
 const logger = require('../utils/logger');
 const { calculateAveragePrice, findMostExpensiveFood, countFoodsByRegion } = require('../utils/food_helper');
-
+const GlobalFood = require('../models/globalFood');
 
 foodsRouter.get('/', async (request, response) => {
   try {
@@ -166,5 +166,108 @@ foodsRouter.put('/:id', async (request, response) => {
   }
 });
 
+foodsRouter.get('/global', async (request, response) => {
+  try {
+    logger.info('Attempting to fetch global foods');
+    const foods = await GlobalFood.find({});
+    logger.info(`Successfully fetched ${foods.length} global foods`);
+    response.json(foods);
+  } catch (error) {
+    logger.error('Error fetching global foods:', error);
+    response.status(500).json({ 
+      error: 'Error fetching global foods',
+      details: error.message 
+    });
+  }
+});
+
+foodsRouter.post('/uploadGlobal', async (request, response) => {
+  try {
+    const foods = request.body;
+    if (!Array.isArray(foods)) {
+      return response.status(400).json({ error: 'Data should be an array of food items' });
+    }
+    
+    const savedFoods = await GlobalFood.insertMany(foods);
+    response.status(201).json(savedFoods);
+    logger.info(`Uploaded ${savedFoods.length} global food items`);
+  } catch (error) {
+    logger.error('Error uploading global foods:', error);
+    response.status(500).json({ 
+      error: 'Error uploading global foods',
+      details: error.message 
+    });
+  }
+});
+
+foodsRouter.post('/global', async (request, response) => {
+  try {
+    const { name, price, portion, region } = request.body;
+    const food = new GlobalFood({ name, price, portion, region });
+    const savedFood = await food.save();
+    response.status(201).json(savedFood);
+    logger.info(`Global food item added: ${name}`);
+  } catch (error) {
+    logger.error('Error creating global food:', error);
+    response.status(500).json({ 
+      error: 'Error creating global food',
+      details: error.message 
+    });
+  }
+});
+
+foodsRouter.delete('/global/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    const deletedFood = await GlobalFood.findByIdAndDelete(id);
+    if (!deletedFood) {
+      return response.status(404).json({ error: 'Global food not found' });
+    }
+    
+    response.status(204).end();
+    logger.info(`Global food item deleted: ${id}`);
+  } catch (error) {
+    logger.error('Error deleting global food:', error);
+    response.status(500).json({ 
+      error: 'Error deleting global food',
+      details: error.message 
+    });
+  }
+});
+
+foodsRouter.put('/global/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, price, portion, region } = request.body;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return response.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    const updatedFood = await GlobalFood.findByIdAndUpdate(
+      id,
+      { name, price, portion, region },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedFood) {
+      return response.status(404).json({ error: 'Global food not found' });
+    }
+
+    response.json(updatedFood);
+    logger.info(`Global food item updated: ${id}`);
+  } catch (error) {
+    logger.error('Error updating global food:', error);
+    response.status(500).json({ 
+      error: 'Error updating global food',
+      details: error.message 
+    });
+  }
+});
 
 module.exports = foodsRouter;
