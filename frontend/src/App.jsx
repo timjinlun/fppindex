@@ -10,6 +10,8 @@ import Notification from './components/Notification';
 import api from './services/api';
 import SearchBar from './components/SearchBar';
 import PriceChart from './components/PriceChart';
+import ImportData from './components/ImportData';
+import { generateMockFoods, generateMockStatistics } from './utils/mockData';
 
 const App = () => {
   const [foods, setFoods] = useState([]);
@@ -20,10 +22,17 @@ const App = () => {
     type: 'success' 
   });
   const [searchTerm, setSearchTerm] = useState('');
+  const [isTestMode, setIsTestMode] = useState(false);
 
   useEffect(() => {
-    fetchFoods();
-  }, []);
+    if (isTestMode) {
+      const mockFoods = generateMockFoods(150);
+      setFoods(mockFoods);
+      setLoading(false);
+    } else {
+      fetchFoods();
+    }
+  }, [isTestMode]);
 
   const fetchFoods = async () => {
     try {
@@ -98,6 +107,23 @@ const App = () => {
     }
   };
 
+  const handleDataImport = async (data) => {
+    try {
+      await api.uploadMany(data);
+      setNotification({
+        message: `Successfully imported ${data.length} items`,
+        type: 'success'
+      });
+      fetchFoods();
+    } catch (error) {
+      setNotification({
+        message: 'Error importing data: ' + error.message,
+        type: 'error'
+      });
+    }
+    setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
+  };
+
   const filteredFoods = foods.filter(food => 
     food.name.toLowerCase().includes(searchTerm) ||
     food.region.toLowerCase().includes(searchTerm)
@@ -111,22 +137,46 @@ const App = () => {
           message={notification.message} 
           type={notification.type} 
         />
-        <SearchBar onSearch={handleSearch} />
-        <FoodForm onFoodCreated={handleFoodCreated} />
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p className="error">{error}</p>
-        ) : (
-          <>
-            <PriceChart foods={filteredFoods} />
-            <FoodList 
-              foods={filteredFoods} 
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
-          </>
-        )}
+        
+        <div className="content-grid">
+          <div className="search-section">
+            <div className="test-mode-controls">
+              <button 
+                onClick={() => setIsTestMode(!isTestMode)}
+                className={`test-mode-button ${isTestMode ? 'active' : ''}`}
+              >
+                {isTestMode ? 'Exit Test Mode' : 'Enter Test Mode (150 items)'}
+              </button>
+            </div>
+            <SearchBar onSearch={handleSearch} />
+          </div>
+
+          {/* Form section - left column */}
+          <div className="form-section">
+            <ImportData onDataImported={handleDataImport} />
+            <FoodForm onFoodCreated={handleFoodCreated} />
+          </div>
+
+          {/* Chart section - right column */}
+          <div className="chart-section">
+            {!loading && !error && <PriceChart foods={filteredFoods} />}
+          </div>
+
+          {/* List section - full width */}
+          <div className="list-section">
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p className="error">{error}</p>
+            ) : (
+              <FoodList 
+                foods={filteredFoods} 
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+              />
+            )}
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

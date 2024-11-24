@@ -8,3 +8,38 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   }
   
+.app-header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.header-description {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.header-description p {
+  margin: 5px 0;
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+.header-description p:first-child {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2em;
+  }
+
+  .header-description p {
+    font-size: 1em;
+  }
+}
+  

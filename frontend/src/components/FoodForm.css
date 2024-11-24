@@ -1,9 +1,16 @@
 .food-form {
-  max-width: 400px;
-  margin: 20px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  background-color: var(--surface-color);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  height: fit-content;
+  color: var(--text-primary);
+}
+
+.food-form h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--text-primary);
 }
 
 .food-form div {
@@ -13,31 +20,74 @@
 .food-form label {
   display: block;
   margin-bottom: 5px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .food-form input,
 .food-form select {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 14px;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+}
+
+.food-form input:focus,
+.food-form select:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
 .food-form button {
   width: 100%;
-  padding: 10px;
-  background-color: #4CAF50;
+  padding: 12px;
+  background-color: var(--accent-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s;
 }
 
 .food-form button:hover {
-  background-color: #45a049;
+  background-color: #219a52;
 }
 
 .error {
-  color: red;
+  color: var(--error-color);
   margin: 10px 0;
+  font-size: 14px;
+}
+
+/* Style for the edit form modal */
+.edit-form {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+}
+
+.edit-form h3 {
+  color: var(--text-primary);
+}
+
+.edit-form label {
+  color: var(--text-secondary);
+}
+
+.edit-form input,
+.edit-form select {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.edit-form input:focus,
+.edit-form select:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 } 

@@ -1,14 +1,161 @@
 /* src/App.css */
+:root {
+  --primary-color: #2c3e50;      /* Dark blue-gray */
+  --secondary-color: #3498db;    /* Bright blue */
+  --accent-color: #27ae60;       /* Green */
+  --background-color: #1a1a1a;   /* Dark background */
+  --surface-color: #2d2d2d;      /* Slightly lighter background */
+  --text-primary: #ffffff;       /* White text */
+  --text-secondary: #b3b3b3;     /* Light gray text */
+  --error-color: #e74c3c;        /* Red */
+  --success-color: #2ecc71;      /* Green */
+  --border-color: #404040;       /* Dark gray */
+}
 
 .App {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--background-color);
+  width: 100%;
+  color: var(--text-primary);
 }
 
 .content {
   flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
   padding: 20px;
-  margin-bottom: 60px; /* Height of the footer to prevent overlap */
-  /* Optional: Add responsive design */
+  box-sizing: border-box;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 500px) minmax(300px, 700px);
+  gap: 30px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 1200px;
+  justify-content: center;
+}
+
+.form-section,
+.chart-section,
+.search-section,
+.list-section {
+  background-color: var(--surface-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.chart-container {
+  background: var(--surface-color);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--text-primary);
+}
+
+.search-section {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.notification {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 20px;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.notification.success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.notification.error {
+  background-color: var(--error-color);
+  color: white;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+  }
+
+  .form-section,
+  .chart-section {
+    grid-column: 1;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+/* Additional spacing */
+.form-section {
+  margin-bottom: 20px;
+}
+
+.chart-section {
+  margin-bottom: 30px;
+}
+
+.content > * {
+  box-sizing: border-box;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+.test-mode-controls {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.test-mode-button {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.test-mode-button.active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.test-mode-button:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
 }

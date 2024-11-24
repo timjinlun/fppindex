@@ -1,0 +1,79 @@
+.import-form {
+  background-color: var(--surface-color);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.import-form h3 {
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.file-input-container {
+  margin-bottom: 15px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.file-label:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.import-button {
+  width: 100%;
+  padding: 10px;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.import-button:hover:not(:disabled) {
+  background-color: #219a52;
+}
+
+.import-button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+.import-info {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: var(--background-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.import-info p {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.import-info code {
+  display: block;
+  padding: 5px;
+  margin: 5px 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-family: monospace;
+} 

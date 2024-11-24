@@ -47,4 +47,14 @@ const update = async (id, updatedFood) => {
   }
 };
 
-export default { getAll, create, remove, update };
+const uploadMany = async (foods) => {
+  try {
+    const response = await axios.post(`${baseUrl}/upload`, foods);
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading foods:', error);
+    throw error;
+  }
+};
+
+export default { getAll, create, remove, update, uploadMany };
