@@ -8,6 +8,8 @@ import FoodList from './components/FoodList';
 import FoodForm from './components/FoodForm';
 import Notification from './components/Notification';
 import api from './services/api';
+import SearchBar from './components/SearchBar';
+import PriceChart from './components/PriceChart';
 
 const App = () => {
   const [foods, setFoods] = useState([]);
@@ -17,6 +19,7 @@ const App = () => {
     message: '', 
     type: 'success' 
   });
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchFoods();
@@ -73,6 +76,15 @@ const App = () => {
     }
   };
 
+  const handleSearch = (term) => {
+    setSearchTerm(term.toLowerCase());
+  };
+
+  const filteredFoods = foods.filter(food => 
+    food.name.toLowerCase().includes(searchTerm) ||
+    food.region.toLowerCase().includes(searchTerm)
+  );
+
   return (
     <div className="App">
       <Header />
@@ -81,16 +93,20 @@ const App = () => {
           message={notification.message} 
           type={notification.type} 
         />
+        <SearchBar onSearch={handleSearch} />
         <FoodForm onFoodCreated={handleFoodCreated} />
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
           <p className="error">{error}</p>
         ) : (
-          <FoodList 
-            foods={foods} 
-            onDelete={handleDelete}
-          />
+          <>
+            <PriceChart foods={filteredFoods} />
+            <FoodList 
+              foods={filteredFoods} 
+              onDelete={handleDelete}
+            />
+          </>
         )}
       </main>
       <Footer />

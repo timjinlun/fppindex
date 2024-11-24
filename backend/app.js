@@ -18,11 +18,21 @@ const app = express();
 
 // MongoDB Connection
 mongoose.connect(config.MONGODB_URI)
-.then(() => {
-  logger.info('Connected to MongoDB');
-})
-.catch((error) => {
-  logger.error('Error connecting to MongoDB:', error.message);
+  .then(() => {
+    logger.info('Connected to MongoDB');
+  })
+  .catch((error) => {
+    logger.error('Error connecting to MongoDB:', error.message);
+    process.exit(1); // Exit if we can't connect to database
+  });
+
+// Add this to check connection status
+mongoose.connection.on('error', err => {
+  logger.error('MongoDB connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  logger.error('MongoDB disconnected');
 });
 
 // Middleware

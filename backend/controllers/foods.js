@@ -6,9 +6,19 @@ const { calculateAveragePrice, findMostExpensiveFood, countFoodsByRegion } = req
 
 
 foodsRouter.get('/', async (request, response) => {
+  try {
+    logger.info('Attempting to fetch all foods');
     const foods = await Food.find({});
+    logger.info(`Successfully fetched ${foods.length} foods`);
     response.json(foods);
-})
+  } catch (error) {
+    logger.error('Error fetching foods:', error);
+    response.status(500).json({ 
+      error: 'Error fetching foods',
+      details: error.message 
+    });
+  }
+});
 
 foodsRouter.post('/', async (req, res) => {
     const { name, price, portion, region } = req.body;

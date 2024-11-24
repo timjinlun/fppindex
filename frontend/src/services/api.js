@@ -37,4 +37,14 @@ const remove = async (id) => {
   }
 };
 
-export default { getAll, create, remove };
+const update = async (id, updatedFood) => {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, updatedFood);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating food:', error);
+    throw error;
+  }
+};
+
+export default { getAll, create, remove, update };
