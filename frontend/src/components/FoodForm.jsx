@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import RegionSelect from './RegionSelect'
+import './FoodForm.css'
 
 const FoodForm = ({ onFoodCreated }) => {
   const [newFood, setNewFood] = useState({
@@ -76,16 +78,10 @@ const FoodForm = ({ onFoodCreated }) => {
         </select>
       </div>
 
-      <div>
-        <label htmlFor="region">Region:</label>
-        <input
-          id="region"
-          type="text"
-          value={newFood.region}
-          onChange={(e) => setNewFood({ ...newFood, region: e.target.value })}
-          required
-        />
-      </div>
+      <RegionSelect
+        value={newFood.region}
+        onChange={(region) => setNewFood({ ...newFood, region })}
+      />
 
       <button type="submit">Add Food</button>
     </form>

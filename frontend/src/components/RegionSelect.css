@@ -1,0 +1,31 @@
+.region-select {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.continent-select,
+.region-options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.region-select select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  width: 100%;
+}
+
+.region-select label {
+  font-weight: 500;
+  color: #666;
+}
+
+.region-select select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+} 
