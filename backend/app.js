@@ -26,7 +26,7 @@ mongoose.connect(config.MONGODB_URI)
     process.exit(1); // Exit if we can't connect to database
   });
 
-// Add this to check connection status
+// Add connection monitoring
 mongoose.connection.on('error', err => {
   logger.error('MongoDB connection error:', err);
 });

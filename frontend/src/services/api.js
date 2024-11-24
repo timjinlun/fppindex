@@ -16,11 +16,13 @@ const getAll = async () => {
 
 const create = async (newFood) => {
   try {
+    console.log('Creating food item:', newFood);
     const response = await axios.post(baseUrl, newFood);
+    console.log('Created food item:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating food:', error);
-    throw error;
+    console.error('Error creating food:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to create food item');
   }
 };
 
@@ -52,8 +54,8 @@ const uploadMany = async (foods, endpoint = 'upload') => {
     const response = await axios.post(`${baseUrl}/${endpoint}`, foods);
     return response.data;
   } catch (error) {
-    console.error('Error uploading foods:', error);
-    throw error;
+    console.error('Error uploading foods:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to upload foods');
   }
 };
 
@@ -62,18 +64,20 @@ const getGlobalFoods = async () => {
     const response = await axios.get(`${baseUrl}/global`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching global foods:', error);
-    throw error;
+    console.error('Error fetching global foods:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to fetch global foods');
   }
 };
 
 const createGlobalFood = async (newFood) => {
   try {
+    console.log('Creating global food item:', newFood);
     const response = await axios.post(`${baseUrl}/global`, newFood);
+    console.log('Created global food item response:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error creating global food:', error);
-    throw error;
+    console.error('Error creating global food:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to create global food item');
   }
 };
 
@@ -88,11 +92,13 @@ const removeGlobalFood = async (id) => {
 
 const updateGlobalFood = async (id, updatedFood) => {
   try {
+    console.log('Updating global food:', id, updatedFood);
     const response = await axios.put(`${baseUrl}/global/${id}`, updatedFood);
+    console.log('Update response:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error updating global food:', error);
-    throw error;
+    console.error('Error updating global food:', error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || 'Failed to update global food item');
   }
 };
 

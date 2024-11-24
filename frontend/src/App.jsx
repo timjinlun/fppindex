@@ -29,75 +29,86 @@ const App = () => {
   const [mode, setMode] = useState('single');
 
   useEffect(() => {
-    if (mode === 'single') {
-      const savedFoods = loadFromLocalStorage('personalFoods') || [];
-      setFoods(savedFoods);
-      setLoading(false);
-    } else {
-      fetchFoods();
-    }
+    const initializeData = async () => {
+      try {
+        setLoading(true);
+        let data;
+        if (mode === 'global') {
+          data = await api.getGlobalFoods();
+        } else {
+          data = loadFromLocalStorage('personalFoods') || [];
+        }
+        setFoods(data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(`Error fetching ${mode} foods: ${err.message}`);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initializeData();
   }, [mode]);
 
-  const fetchFoods = async () => {
-    try {
-      setLoading(true);
-      const foodsData = await api.getAll();
-      setFoods(foodsData);
-      setError(null);
-    } catch (err) {
-      setError('Error fetching foods. Please try again later.');
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
-    }
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
+    setFoods([]);
+    setLoading(true);
   };
 
   const handleFoodCreated = async (newFood) => {
     try {
+      console.log('Creating food in mode:', mode);
+      let createdFood;
+      
       if (mode === 'global') {
-        const createdFood = await api.create(newFood);
-        setFoods([...foods, createdFood]);
+        createdFood = await api.createGlobalFood(newFood);
+        console.log('Created global food:', createdFood);
       } else {
-        const personalFood = {
+        createdFood = {
           ...newFood,
           id: `local-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
         };
-        const updatedFoods = [...foods, personalFood];
-        setFoods(updatedFoods);
+        const updatedFoods = [...foods, createdFood];
         saveToLocalStorage('personalFoods', updatedFoods);
       }
       
+      setFoods(prevFoods => [...prevFoods, createdFood]);
       setNotification({ 
-        message: `Successfully added ${newFood.name}`, 
+        message: `Successfully added ${createdFood.name}`, 
         type: 'success' 
       });
     } catch (err) {
       setNotification({ 
-        message: 'Error creating food item', 
+        message: `Error creating food item: ${err.message}`, 
         type: 'error' 
       });
-      console.error('Error:', err);
+      console.error('Error creating food:', err);
     }
-    setTimeout(() => setNotification({ message: '', type: '' }), 5000);
+    setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
   };
 
   const handleDelete = async (id) => {
     try {
       if (mode === 'global') {
-        await api.remove(id);
+        await api.removeGlobalFood(id);
       }
-      const updatedFoods = foods.filter(food => food.id !== id);
-      setFoods(updatedFoods);
-      if (mode === 'single') {
-        saveToLocalStorage('personalFoods', updatedFoods);
-      }
+      setFoods(prevFoods => {
+        const updatedFoods = prevFoods.filter(food => food.id !== id);
+        if (mode === 'single') {
+          saveToLocalStorage('personalFoods', updatedFoods);
+        }
+        return updatedFoods;
+      });
+      
       setNotification({
         message: 'Food item deleted successfully',
         type: 'success'
       });
     } catch (err) {
       setNotification({
-        message: 'Error deleting food item',
+        message: `Error deleting food item: ${err.message}`,
         type: 'error'
       });
       console.error('Delete error:', err);
@@ -111,30 +122,39 @@ const App = () => {
 
   const handleUpdate = async (id, updatedFood) => {
     try {
+      console.log('Updating food in mode:', mode, 'with ID:', id);
       let updated;
+      
       if (mode === 'global') {
-        updated = await api.update(id, updatedFood);
+        // Make sure we're sending all required fields
+        const foodToUpdate = {
+          name: updatedFood.name,
+          price: Number(updatedFood.price),
+          portion: updatedFood.portion,
+          region: updatedFood.region
+        };
+        updated = await api.updateGlobalFood(id, foodToUpdate);
+        console.log('Updated global food:', updated);
       } else {
         updated = { ...updatedFood, id };
-      }
-      
-      const updatedFoods = foods.map(food => food.id === id ? updated : food);
-      setFoods(updatedFoods);
-      
-      if (mode === 'single') {
+        // Save to local storage for personal mode
+        const updatedFoods = foods.map(food => food.id === id ? updated : food);
         saveToLocalStorage('personalFoods', updatedFoods);
       }
+      
+      // Update state
+      setFoods(prevFoods => prevFoods.map(food => food.id === id ? updated : food));
       
       setNotification({
         message: `Successfully updated ${updated.name}`,
         type: 'success'
       });
     } catch (err) {
+      console.error('Update error:', err);
       setNotification({
-        message: 'Error updating food item',
+        message: `Error updating food item: ${err.message}`,
         type: 'error'
       });
-      console.error('Update error:', err);
     }
     setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
   };
@@ -142,18 +162,18 @@ const App = () => {
   const handleDataImport = async (data) => {
     try {
       if (mode === 'global') {
-        // Upload to MongoDB for global mode
-        await api.uploadMany(data, 'uploadGlobal');
-        await fetchGlobalFoods();
+        const savedFoods = await api.uploadMany(data, 'uploadGlobal');
+        setFoods(prevFoods => [...prevFoods, ...savedFoods]);
       } else {
-        // Store locally for personal mode
         const newFoods = data.map(food => ({
           ...food,
           id: `local-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
         }));
-        const updatedFoods = [...foods, ...newFoods];
-        setFoods(updatedFoods);
-        saveToLocalStorage('personalFoods', updatedFoods);
+        setFoods(prevFoods => {
+          const updatedFoods = [...prevFoods, ...newFoods];
+          saveToLocalStorage('personalFoods', updatedFoods);
+          return updatedFoods;
+        });
       }
       
       setNotification({
@@ -162,45 +182,10 @@ const App = () => {
       });
     } catch (error) {
       setNotification({
-        message: 'Error importing data: ' + error.message,
+        message: `Error importing data: ${error.message}`,
         type: 'error'
       });
     }
-    setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
-  };
-
-  const handleModeChange = (newMode) => {
-    setMode(newMode);
-    setFoods([]);
-    setLoading(true);
-    
-    if (newMode === 'global') {
-      fetchGlobalFoods();
-    } else {
-      // Load personal data from localStorage
-      const savedFoods = loadFromLocalStorage('personalFoods') || [];
-      setFoods(savedFoods);
-      setLoading(false);
-    }
-  };
-
-  const fetchGlobalFoods = async () => {
-    try {
-      setLoading(true);
-      const foodsData = await api.getGlobalFoods();
-      setFoods(foodsData);
-      setError(null);
-    } catch (err) {
-      setError('Error fetching global foods data.');
-      console.error('Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchPersonalFoods = async () => {
-    // Your existing fetchFoods function
-    fetchFoods();
   };
 
   const filteredFoods = foods.filter(food => 
