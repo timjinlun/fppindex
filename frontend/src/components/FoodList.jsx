@@ -3,9 +3,11 @@
 import PropTypes from 'prop-types';
 import './FoodList.css'; // Ensure this file exists
 
-const FoodList = ({ foods }) => {
-  console.log('FoodList received foods:', foods);
-  console.log('Is foods an array?', Array.isArray(foods));
+const FoodList = ({ foods, onDelete }) => {
+  const handleDelete = (id) => {
+    console.log('Deleting food with ID:', id);
+    onDelete(id);
+  };
 
   if (!Array.isArray(foods)) {
     return <p>Error: Foods data is invalid.</p>;
@@ -22,7 +24,7 @@ const FoodList = ({ foods }) => {
               <th>Price ($)</th>
               <th>Portion</th>
               <th>Region</th>
-              {/* Removed Likes Column */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -32,7 +34,14 @@ const FoodList = ({ foods }) => {
                 <td>{food.price.toFixed(2)}</td>
                 <td>{food.portion}</td>
                 <td>{food.region}</td>
-                {/* Removed Likes Cell */}
+                <td>
+                  <button
+                    onClick={() => handleDelete(food.id)}
+                    className="delete-button"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -53,9 +62,9 @@ FoodList.propTypes = {
       price: PropTypes.number.isRequired,
       portion: PropTypes.oneOf(['kg', 'lb', 'g', 'oz']).isRequired,
       region: PropTypes.string.isRequired,
-      // Removed likes propType
     })
   ).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default FoodList;

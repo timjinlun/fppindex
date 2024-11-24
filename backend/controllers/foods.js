@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const foodsRouter = require('express').Router();
-const Food = require('../models/Food');
+const Food = require('../models/food');
 const logger = require('../utils/logger');
+const { calculateAveragePrice, findMostExpensiveFood, countFoodsByRegion } = require('../utils/food_helper');
 
 
 foodsRouter.get('/', async (request, response) => {
@@ -66,6 +68,43 @@ foodsRouter.get('/statistics', async (req, res) => {
         mostExpensiveFood,
         foodsByRegion,
     });
+});
+
+foodsRouter.delete('/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    logger.info('Attempting to delete food with ID:', id);
+    
+    // Check if ID is valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      logger.error('Invalid MongoDB ID format');
+      return response.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    // Add this line to see what's in the database
+    const foodExists = await Food.findById(id);
+    logger.info('Found food:', foodExists);
+
+    const deletedFood = await Food.findByIdAndDelete(id);
+    logger.info('Delete operation result:', deletedFood);
+    
+    if (!deletedFood) {
+      logger.info('Food not found with ID:', id);
+      return response.status(404).json({ error: 'food not found' });
+    }
+    
+    response.status(204).end();
+    logger.info(`Food item deleted: ${id}`);
+  } catch (error) {
+    logger.error('Error type:', error.name);
+    logger.error('Error message:', error.message);
+    logger.error('Full error:', error);
+    logger.error('Stack trace:', error.stack);
+    response.status(500).json({ 
+      error: 'Error deleting food item',
+      details: error.message 
+    });
+  }
 });
 
 

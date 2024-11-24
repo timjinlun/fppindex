@@ -1,0 +1,43 @@
+.food-form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.food-form div {
+  margin-bottom: 15px;
+}
+
+.food-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.food-form input,
+.food-form select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.food-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.food-form button:hover {
+  background-color: #45a049;
+}
+
+.error {
+  color: red;
+  margin: 10px 0;
+} 
