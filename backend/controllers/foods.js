@@ -117,5 +117,54 @@ foodsRouter.delete('/:id', async (request, response) => {
   }
 });
 
+foodsRouter.put('/:id', async (request, response) => {
+  try {
+    const { id } = request.params;
+    logger.info('Attempting to update food with ID:', id);
+    
+    // Check if ID is valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      logger.error('Invalid MongoDB ID format');
+      return response.status(400).json({ error: 'Invalid ID format' });
+    }
+
+    const { name, price, portion, region } = request.body;
+    
+    // Create updated food object
+    const updatedFood = {
+      name,
+      price,
+      portion,
+      region
+    };
+
+    // Add validation
+    if (!name || !price || !portion || !region) {
+      return response.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Find and update the food item
+    const food = await Food.findByIdAndUpdate(
+      id,
+      updatedFood,
+      { new: true, runValidators: true }
+    );
+
+    if (!food) {
+      logger.info('Food not found with ID:', id);
+      return response.status(404).json({ error: 'food not found' });
+    }
+
+    logger.info('Successfully updated food:', food);
+    response.json(food);
+  } catch (error) {
+    logger.error('Error updating food:', error);
+    response.status(500).json({ 
+      error: 'Error updating food item',
+      details: error.message 
+    });
+  }
+});
+
 
 module.exports = foodsRouter;

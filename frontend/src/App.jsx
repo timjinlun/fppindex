@@ -80,6 +80,24 @@ const App = () => {
     setSearchTerm(term.toLowerCase());
   };
 
+  const handleUpdate = async (id, updatedFood) => {
+    try {
+      const updated = await api.update(id, updatedFood);
+      setFoods(foods.map(food => food.id === id ? updated : food));
+      setNotification({
+        message: `Successfully updated ${updated.name}`,
+        type: 'success'
+      });
+      setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
+    } catch (err) {
+      setNotification({
+        message: 'Error updating food item',
+        type: 'error'
+      });
+      console.error('Update error:', err);
+    }
+  };
+
   const filteredFoods = foods.filter(food => 
     food.name.toLowerCase().includes(searchTerm) ||
     food.region.toLowerCase().includes(searchTerm)
@@ -105,6 +123,7 @@ const App = () => {
             <FoodList 
               foods={filteredFoods} 
               onDelete={handleDelete}
+              onUpdate={handleUpdate}
             />
           </>
         )}

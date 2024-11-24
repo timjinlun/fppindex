@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import './FoodList.css';
 import { useState, useMemo } from 'react';
 
-const FoodList = ({ foods, onDelete }) => {
+const FoodList = ({ foods, onDelete, onUpdate }) => {
   const [sortField, setSortField] = useState('name');
   const [filterRegion, setFilterRegion] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingFood, setEditingFood] = useState(null);
   const itemsPerPage = 10;
 
   // Get unique regions from foods array
@@ -36,6 +37,27 @@ const FoodList = ({ foods, onDelete }) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       onDelete(id);
     }
+  };
+
+  const handleEdit = (food) => {
+    setEditingFood(food);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await onUpdate(editingFood.id, editingFood);
+      setEditingFood(null);
+    } catch (error) {
+      console.error('Error updating food:', error);
+    }
+  };
+
+  const handleEditChange = (field, value) => {
+    setEditingFood(prev => ({
+      ...prev,
+      [field]: field === 'price' ? Number(value) : value
+    }));
   };
 
   if (!Array.isArray(foods)) {
@@ -75,6 +97,62 @@ const FoodList = ({ foods, onDelete }) => {
         </div>
       </div>
 
+      {editingFood && (
+        <div className="edit-modal">
+          <form onSubmit={handleUpdate} className="edit-form">
+            <h3>Edit Food Item</h3>
+            <div>
+              <label htmlFor="edit-name">Name:</label>
+              <input
+                id="edit-name"
+                type="text"
+                value={editingFood.name}
+                onChange={(e) => handleEditChange('name', e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-price">Price:</label>
+              <input
+                id="edit-price"
+                type="number"
+                step="0.01"
+                value={editingFood.price}
+                onChange={(e) => handleEditChange('price', e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-portion">Portion:</label>
+              <select
+                id="edit-portion"
+                value={editingFood.portion}
+                onChange={(e) => handleEditChange('portion', e.target.value)}
+              >
+                <option value="kg">kg</option>
+                <option value="lb">lb</option>
+                <option value="g">g</option>
+                <option value="oz">oz</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-region">Region:</label>
+              <input
+                id="edit-region"
+                type="text"
+                value={editingFood.region}
+                onChange={(e) => handleEditChange('region', e.target.value)}
+                required
+              />
+            </div>
+            <div className="edit-buttons">
+              <button type="submit">Save</button>
+              <button type="button" onClick={() => setEditingFood(null)}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
+
       <h2>Food Items ({sortedAndFilteredFoods.length} items)</h2>
       
       {paginatedFoods.length > 0 ? (
@@ -97,6 +175,13 @@ const FoodList = ({ foods, onDelete }) => {
                   <td>{food.portion}</td>
                   <td>{food.region}</td>
                   <td>
+                    <button
+                      onClick={() => handleEdit(food)}
+                      className="edit-button"
+                      aria-label={`Edit ${food.name}`}
+                    >
+                      Edit
+                    </button>
                     <button
                       onClick={() => handleDelete(food.id)}
                       className="delete-button"
@@ -144,6 +229,7 @@ FoodList.propTypes = {
     })
   ).isRequired,
   onDelete: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired,
 };
 
 export default FoodList;
