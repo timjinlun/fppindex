@@ -12,6 +12,7 @@ import SearchBar from './components/SearchBar';
 import PriceChart from './components/PriceChart';
 import ImportData from './components/ImportData';
 import { generateMockFoods, generateMockStatistics } from './utils/mockData';
+import ModeSelector from './components/ModeSelector';
 
 const App = () => {
   const [foods, setFoods] = useState([]);
@@ -23,6 +24,7 @@ const App = () => {
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [isTestMode, setIsTestMode] = useState(false);
+  const [mode, setMode] = useState('single');
 
   useEffect(() => {
     if (isTestMode) {
@@ -109,12 +111,21 @@ const App = () => {
 
   const handleDataImport = async (data) => {
     try {
-      await api.uploadMany(data);
+      if (mode === 'global') {
+        // Add validation for global data
+        await validateGlobalData(data);
+      }
+      
+      const endpoint = mode === 'global' ? 'uploadGlobal' : 'upload';
+      await api.uploadMany(data, endpoint);
+      
       setNotification({
-        message: `Successfully imported ${data.length} items`,
+        message: `Successfully imported ${data.length} items to ${mode} dataset`,
         type: 'success'
       });
-      fetchFoods();
+      
+      // Refresh the appropriate dataset
+      mode === 'global' ? fetchGlobalFoods() : fetchPersonalFoods();
     } catch (error) {
       setNotification({
         message: 'Error importing data: ' + error.message,
@@ -122,6 +133,38 @@ const App = () => {
       });
     }
     setTimeout(() => setNotification({ message: '', type: 'success' }), 5000);
+  };
+
+  const handleModeChange = (newMode) => {
+    setMode(newMode);
+    // Clear existing data when switching modes
+    setFoods([]);
+    setLoading(true);
+    
+    if (newMode === 'global') {
+      fetchGlobalFoods();
+    } else {
+      fetchPersonalFoods();
+    }
+  };
+
+  const fetchGlobalFoods = async () => {
+    try {
+      setLoading(true);
+      const foodsData = await api.getGlobalFoods();
+      setFoods(foodsData);
+      setError(null);
+    } catch (err) {
+      setError('Error fetching global foods data.');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPersonalFoods = async () => {
+    // Your existing fetchFoods function
+    fetchFoods();
   };
 
   const filteredFoods = foods.filter(food => 
@@ -136,6 +179,11 @@ const App = () => {
         <Notification 
           message={notification.message} 
           type={notification.type} 
+        />
+        
+        <ModeSelector 
+          currentMode={mode}
+          onModeChange={handleModeChange}
         />
         
         <div className="content-grid">

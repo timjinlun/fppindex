@@ -29,6 +29,9 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .file-label:hover {
@@ -45,6 +48,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-bottom: 15px;
 }
 
 .import-button:hover:not(:disabled) {
@@ -54,6 +58,28 @@
 .import-button:disabled {
   background-color: var(--border-color);
   cursor: not-allowed;
+}
+
+.validation-errors {
+  margin: 15px 0;
+  padding: 15px;
+  background-color: var(--error-color);
+  border-radius: 6px;
+  color: white;
+}
+
+.validation-errors h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.validation-errors ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.validation-errors li {
+  margin-bottom: 5px;
 }
 
 .import-info {
@@ -76,4 +102,15 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   font-family: monospace;
+  white-space: pre;
+}
+
+.import-info ul {
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+.import-info li {
+  font-size: 0.9em;
+  margin-bottom: 3px;
 } 

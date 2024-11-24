@@ -47,9 +47,9 @@ const update = async (id, updatedFood) => {
   }
 };
 
-const uploadMany = async (foods) => {
+const uploadMany = async (foods, endpoint = 'upload') => {
   try {
-    const response = await axios.post(`${baseUrl}/upload`, foods);
+    const response = await axios.post(`${baseUrl}/${endpoint}`, foods);
     return response.data;
   } catch (error) {
     console.error('Error uploading foods:', error);
@@ -57,4 +57,14 @@ const uploadMany = async (foods) => {
   }
 };
 
-export default { getAll, create, remove, update, uploadMany };
+const getGlobalFoods = async () => {
+  try {
+    const response = await axios.get(`${baseUrl}/global`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching global foods:', error);
+    throw error;
+  }
+};
+
+export default { getAll, create, remove, update, uploadMany, getGlobalFoods };
