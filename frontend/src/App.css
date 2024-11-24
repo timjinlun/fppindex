@@ -1,15 +1,16 @@
 /* src/App.css */
 :root {
-  --primary-color: #2c3e50;      /* Dark blue-gray */
-  --secondary-color: #3498db;    /* Bright blue */
-  --accent-color: #27ae60;       /* Green */
-  --background-color: #1a1a1a;   /* Dark background */
-  --surface-color: #2d2d2d;      /* Slightly lighter background */
-  --text-primary: #ffffff;       /* White text */
-  --text-secondary: #b3b3b3;     /* Light gray text */
-  --error-color: #e74c3c;        /* Red */
-  --success-color: #2ecc71;      /* Green */
-  --border-color: #404040;       /* Dark gray */
+  --primary-color: #1e1e2e;      /* Dark background */
+  --secondary-color: #89b4fa;    /* Soft blue */
+  --accent-color: #a6e3a1;       /* Soft green */
+  --background-color: #11111b;   /* Darker background */
+  --surface-color: #313244;      /* Card background */
+  --text-primary: #cdd6f4;       /* Main text */
+  --text-secondary: #bac2de;     /* Secondary text */
+  --error-color: #f38ba8;        /* Soft red */
+  --success-color: #a6e3a1;      /* Soft green */
+  --border-color: #45475a;       /* Border color */
+  --hover-color: #585b70;        /* Hover state */
 }
 
 .App {

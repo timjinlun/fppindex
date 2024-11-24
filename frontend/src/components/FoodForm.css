@@ -1,62 +1,76 @@
 .food-form {
   background-color: var(--surface-color);
   padding: 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   height: fit-content;
   color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(8px);
 }
 
 .food-form h2 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   color: var(--text-primary);
+  font-size: 1.5em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .food-form div {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .food-form label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
   color: var(--text-secondary);
+  font-size: 0.95em;
+  letter-spacing: 0.3px;
 }
 
 .food-form input,
 .food-form select {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
-  background-color: var(--background-color);
+  background-color: var(--primary-color);
   color: var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 .food-form input:focus,
 .food-form select:focus {
   outline: none;
   border-color: var(--secondary-color);
-  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.2);
 }
 
 .food-form button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background-color: var(--accent-color);
-  color: white;
+  color: var(--primary-color);
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
 }
 
 .food-form button:hover {
-  background-color: #219a52;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(166, 227, 161, 0.2);
+}
+
+.food-form button:active {
+  transform: translateY(0);
 }
 
 .error {

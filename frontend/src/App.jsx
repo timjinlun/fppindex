@@ -14,6 +14,7 @@ import ImportData from './components/ImportData';
 import { generateMockFoods, generateMockStatistics } from './utils/mockData';
 import ModeSelector from './components/ModeSelector';
 import { saveToLocalStorage, loadFromLocalStorage } from './utils/storage';
+import ExportButton from './components/ExportButton';
 
 const App = () => {
   const [foods, setFoods] = useState([]);
@@ -252,11 +253,17 @@ const App = () => {
             ) : error ? (
               <p className="error">{error}</p>
             ) : (
-              <FoodList 
-                foods={filteredFoods} 
-                onDelete={handleDelete}
-                onUpdate={handleUpdate}
-              />
+              <>
+                <ExportButton 
+                  foods={filteredFoods} 
+                  mode={mode} 
+                />
+                <FoodList 
+                  foods={filteredFoods} 
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                />
+              </>
             )}
           </div>
         </div>
