@@ -5,13 +5,20 @@ require('express-async-errors');
 
 const express = require('express');
 const cors = require('cors');
+
+// Setting up the controllers
 const foodController = require('./controllers/foods');
-const userController = require('/controllers/users');
+const userController = require('./controllers/users');
+
 const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middleware');
+
 const helmet = require('helmet'); // For security
 const rateLimit = require('express-rate-limit'); // For rate limiting
 const mongoSanitize = require('express-mongo-sanitize'); // For sanitization
+
+// Set up the database.
 const mongoose = require('mongoose');
+
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 
@@ -55,7 +62,7 @@ app.use(mongoSanitize());
 
 // Routes
 app.use('/api/foods', foodController);
-app.user('api/users', userController);
+app.use('/api/users', userController);
 
 // Handle Unknown Endpoints
 app.use(unknownEndpoint);

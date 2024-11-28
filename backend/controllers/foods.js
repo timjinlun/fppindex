@@ -86,7 +86,10 @@ foodsRouter.delete('/global/:id', async (request, response) => {
 
     response.status(204).end();
     logger.info(`Global food item deleted: ${id}`);
+
 });
+
+
 // Update the PUT endpoint for global foods
 foodsRouter.put('/global/:id', async (request, response) => {
     const { id } = request.params;
