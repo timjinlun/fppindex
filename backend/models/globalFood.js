@@ -34,6 +34,12 @@ const globalFoodSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'anonymous'
+  },
+  // Reference to the user who created this food item
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   }
 });
 

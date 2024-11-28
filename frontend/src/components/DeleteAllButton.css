@@ -1,0 +1,23 @@
+.delete-all-button {
+  background-color: var(--error-color);
+  color: var(--primary-color);
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.delete-all-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(110%);
+  box-shadow: 0 4px 12px rgba(243, 139, 168, 0.2);
+}
+
+.delete-all-button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+  opacity: 0.7;
+} 

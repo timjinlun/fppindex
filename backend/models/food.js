@@ -10,7 +10,7 @@ const foodSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    required: [true, 'Price is required'],
+    required: [true, 'Price is required'], 
     min: [0, 'Price cannot be negative'],
   },
   portion: {
@@ -26,6 +26,10 @@ const foodSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
 });
 
 foodSchema.set('toJSON', {
