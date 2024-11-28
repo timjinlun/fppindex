@@ -6,6 +6,7 @@ require('express-async-errors');
 const express = require('express');
 const cors = require('cors');
 const foodController = require('./controllers/foods');
+const userController = require('/controllers/users');
 const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middleware');
 const helmet = require('helmet'); // For security
 const rateLimit = require('express-rate-limit'); // For rate limiting
@@ -54,6 +55,7 @@ app.use(mongoSanitize());
 
 // Routes
 app.use('/api/foods', foodController);
+app.user('api/users', userController);
 
 // Handle Unknown Endpoints
 app.use(unknownEndpoint);

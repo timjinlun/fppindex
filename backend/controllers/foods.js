@@ -5,7 +5,6 @@ const logger = require('../utils/logger');
 const GlobalFood = require('../models/globalFood');
 
 // Get all foods (personal mode)
-// Get all foods (personal mode)
 foodsRouter.get('/', async (request, response, next) => {
     logger.info('Attempting to fetch all foods');
     const foods = await Food.find({});
