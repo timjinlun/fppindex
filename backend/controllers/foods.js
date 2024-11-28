@@ -7,7 +7,7 @@ const GlobalFood = require('../models/globalFood');
 // Get all foods (personal mode)
 foodsRouter.get('/', async (request, response, next) => {
     logger.info('Attempting to fetch all foods');
-    const foods = await Food.find({});
+    const foods = await Food.find({}).populate('users', )
     logger.info(`Successfully fetched ${foods.length} foods`);
     response.json(foods);
 });

@@ -6,13 +6,17 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  name: String,
   password: String,
   passwordHash: String,
-  createdAt: Date,
-  foods: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Food'
-  }]
+  foods: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Food'
+    }
+  ]
+}, {
+  timestamps: true
 });
 
 userSchema.set('toJSON', {
