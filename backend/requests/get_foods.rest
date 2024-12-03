@@ -1,0 +1,5 @@
+### Get all foods
+GET http://localhost:5174/api/foods
+
+### Get global foods
+GET http://localhost:5174/api/foods/global

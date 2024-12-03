@@ -1,8 +1,51 @@
+### Get all foods
+GET http://localhost:5174/api/foods
+
+### Get global foods
+GET http://localhost:5174/api/foods/global
+
+### Create a new user if not already created, otherwise login with the user
 POST http://localhost:5174/api/users
 Content-Type: application/json
 
 {
-  "username": "example",
-  "name": "Example User",
-  "password": "yourpassword"
+    "username": "testuser",
+    "name": "Test User",
+    "password": "password123"
+}
+
+### Login with the user (you'll need to implement login endpoint)
+POST http://localhost:5174/api/login
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "password": "password123"
+}
+
+
+### Create a personal food item (Replace TOKEN with the token from login response)
+POST http://localhost:5174/api/foods
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWQiOiI2NzQ4YTY4M2QxNDQ4MzUzZjk3MThhZWUiLCJpYXQiOjE3MzI5ODY2MjJ9.H-Ms4DmSiN2yjbPQa6aYJ-r2zmZYRuFEpZzvbCsf3VY
+
+{
+    "name": "Test Food",
+    "price": 9.99,
+    "portion": "kg",
+    "region": "Test Region"
+}
+
+
+### Create a global food item (Replace TOKEN with the token from login response)
+POST http://localhost:5174/api/foods/global
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWQiOiI2NzQ4YTY4M2QxNDQ4MzUzZjk3MThhZWUiLCJpYXQiOjE3MzI5ODY2MjJ9.H-Ms4DmSiN2yjbPQa6aYJ-r2zmZYRuFEpZzvbCsf3VY
+
+
+{
+    "name": "Global Test Food",
+    "price": 19.99,
+    "portion": "kg",
+    "region": "Global Test Region"
 }

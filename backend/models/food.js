@@ -22,16 +22,12 @@ const foodSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Region is required'],
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   }
-});
+}, { timestamps: true });
 
 foodSchema.set('toJSON', {
   transform: (document, returnedObject) => {

@@ -8,6 +8,7 @@ const cors = require('cors');
 
 // Setting up the controllers
 const foodController = require('./controllers/foods');
+const loginController = require('./controllers/login');
 const userController = require('./controllers/users');
 
 const { requestLogger, unknownEndpoint, errorHandler } = require('./utils/middleware');
@@ -21,6 +22,7 @@ const mongoose = require('mongoose');
 
 const config = require('./utils/config');
 const logger = require('./utils/logger');
+const { tokenExtractor, userExtractor } = require('./utils/middleware');
 
 const app = express();
 
@@ -43,11 +45,15 @@ mongoose.connection.on('disconnected', () => {
   logger.error('MongoDB disconnected');
 });
 
+app.use(express.static('dist'))
+
 // Middleware
 app.use(helmet()); // Sets secure HTTP headers
 app.use(cors());
 app.use(express.json()); // Parses incoming JSON requests
 app.use(requestLogger); // Logs incoming requests
+app.use(tokenExtractor);
+app.use(userExtractor);
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -63,6 +69,7 @@ app.use(mongoSanitize());
 // Routes
 app.use('/api/foods', foodController);
 app.use('/api/users', userController);
+app.use('/api/login', loginController);
 
 // Handle Unknown Endpoints
 app.use(unknownEndpoint);

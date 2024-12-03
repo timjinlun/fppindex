@@ -1,6 +1,8 @@
 // backend/utils/middleware.js
 
 const logger = require('./logger');
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 /**
  * Middleware to log incoming requests.
@@ -36,14 +38,43 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' });
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message });
+  } else if (error.name === "MongoServerError" && error.message.includes('E11000 duplicate key error')) {
+    return response.status(400).json({ error: 'expected `username` to be unique'})
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: 'token invalid' })
   }
 
-  // Default to 500 server error
-  response.status(500).json({ error: 'something went wrong...' });
-};
+  // next() is used to pass the error to the next middleware
+  next(error)
+}
+
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+      request.token = authorization.replace('bearer ', '')
+  } else {
+    request.token = null
+  }
+  // next() is used to pass the request to the next middleware
+  next()
+}
+
+const userExtractor = async (request, response, next) => {
+  if (request.token) {
+      const decodedToken = jwt.verify(request.token, process.env.SECRET)
+      if (decodedToken.id) {
+          request.user = await User.findById(decodedToken.id)
+      }
+  }
+  // next() is used to pass the request to the next middleware
+  next()
+}
+
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
+  tokenExtractor,
+  userExtractor
 };
